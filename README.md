@@ -23,6 +23,8 @@ becomes a push notification even when the app is closed.
   ("Needs you").
 - **Threads:** each raven's conversations, newest first. A new thread is a new
   NanoClaw session with its own context; its first message becomes its title.
+  Archiving a thread hides it from the list (it stays under Archived, and a
+  new message reopens it); NanoClaw's session is left as it is.
 - **Approvals:** the same choices as NanoClaw's Telegram cards. A click resolves
   the card at once, except a gateway approval, which waits for the gateway to
   confirm. "Reject with reason…" asks for the reason in the card.
