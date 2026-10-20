@@ -35,7 +35,7 @@ const post = (body: unknown): RequestInit => ({
 export const nanoclaw = {
   agents: () => json<{ agents: Agent[] }>('/api/agents').then((r) => r.agents),
   threads: (folder: string) =>
-    json<{ threads: Omit<Thread, 'title'>[] }>(`/api/agents/${encodeURIComponent(folder)}/threads`).then(
+    json<{ threads: Omit<Thread, 'title' | 'archived'>[] }>(`/api/agents/${encodeURIComponent(folder)}/threads`).then(
       (r) => r.threads,
     ),
   messages: (folder: string, threadId: string, limit = 200) =>

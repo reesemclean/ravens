@@ -48,6 +48,15 @@ export const MIGRATIONS: string[] = [
     PRIMARY KEY (folder, thread_id)
   );
   `,
+  `
+  -- Archived threads are hidden from the list; NanoClaw's session is untouched.
+  CREATE TABLE thread_archive (
+    folder TEXT NOT NULL,
+    thread_id TEXT NOT NULL,
+    archived_at INTEGER NOT NULL,
+    PRIMARY KEY (folder, thread_id)
+  );
+  `,
 ]
 
 const handle = shared('db', () => ({ instance: null as Database.Database | null }))

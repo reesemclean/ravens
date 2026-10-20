@@ -31,6 +31,7 @@ import { Route as ApiAuthRegisterOptionsRouteImport } from './routes/api.auth.re
 import { Route as ApiAuthRegisterVerifyRouteImport } from './routes/api.auth.register.verify'
 import { Route as RFolderTThreadIdRouteImport } from './routes/r.$folder_.t.$threadId'
 import { Route as ApiAgentsFolderThreadsIndexRouteImport } from './routes/api.agents.$folder.threads.index'
+import { Route as ApiAgentsFolderThreadsThreadIdArchiveRouteImport } from './routes/api.agents.$folder.threads.$threadId.archive'
 import { Route as ApiAgentsFolderThreadsThreadIdMessagesRouteImport } from './routes/api.agents.$folder.threads.$threadId.messages'
 
 const IndexRoute = IndexRouteImport.update({
@@ -144,6 +145,12 @@ const ApiAgentsFolderThreadsIndexRoute =
     path: '/api/agents/$folder/threads/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAgentsFolderThreadsThreadIdArchiveRoute =
+  ApiAgentsFolderThreadsThreadIdArchiveRouteImport.update({
+    id: '/api/agents/$folder/threads/$threadId/archive',
+    path: '/api/agents/$folder/threads/$threadId/archive',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAgentsFolderThreadsThreadIdMessagesRoute =
   ApiAgentsFolderThreadsThreadIdMessagesRouteImport.update({
     id: '/api/agents/$folder/threads/$threadId/messages',
@@ -174,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/register/verify': typeof ApiAuthRegisterVerifyRoute
   '/r/$folder/t/$threadId': typeof RFolderTThreadIdRoute
   '/api/agents/$folder/threads/': typeof ApiAgentsFolderThreadsIndexRoute
+  '/api/agents/$folder/threads/$threadId/archive': typeof ApiAgentsFolderThreadsThreadIdArchiveRoute
   '/api/agents/$folder/threads/$threadId/messages': typeof ApiAgentsFolderThreadsThreadIdMessagesRoute
 }
 export interface FileRoutesByTo {
@@ -198,6 +206,7 @@ export interface FileRoutesByTo {
   '/api/auth/register/verify': typeof ApiAuthRegisterVerifyRoute
   '/r/$folder/t/$threadId': typeof RFolderTThreadIdRoute
   '/api/agents/$folder/threads': typeof ApiAgentsFolderThreadsIndexRoute
+  '/api/agents/$folder/threads/$threadId/archive': typeof ApiAgentsFolderThreadsThreadIdArchiveRoute
   '/api/agents/$folder/threads/$threadId/messages': typeof ApiAgentsFolderThreadsThreadIdMessagesRoute
 }
 export interface FileRoutesById {
@@ -224,6 +233,7 @@ export interface FileRoutesById {
   '/api/auth/register/verify': typeof ApiAuthRegisterVerifyRoute
   '/r/$folder_/t/$threadId': typeof RFolderTThreadIdRoute
   '/api/agents/$folder/threads/': typeof ApiAgentsFolderThreadsIndexRoute
+  '/api/agents/$folder/threads/$threadId/archive': typeof ApiAgentsFolderThreadsThreadIdArchiveRoute
   '/api/agents/$folder/threads/$threadId/messages': typeof ApiAgentsFolderThreadsThreadIdMessagesRoute
 }
 export interface FileRouteTypes {
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/api/auth/register/verify'
     | '/r/$folder/t/$threadId'
     | '/api/agents/$folder/threads/'
+    | '/api/agents/$folder/threads/$threadId/archive'
     | '/api/agents/$folder/threads/$threadId/messages'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/api/auth/register/verify'
     | '/r/$folder/t/$threadId'
     | '/api/agents/$folder/threads'
+    | '/api/agents/$folder/threads/$threadId/archive'
     | '/api/agents/$folder/threads/$threadId/messages'
   id:
     | '__root__'
@@ -300,6 +312,7 @@ export interface FileRouteTypes {
     | '/api/auth/register/verify'
     | '/r/$folder_/t/$threadId'
     | '/api/agents/$folder/threads/'
+    | '/api/agents/$folder/threads/$threadId/archive'
     | '/api/agents/$folder/threads/$threadId/messages'
   fileRoutesById: FileRoutesById
 }
@@ -325,6 +338,7 @@ export interface RootRouteChildren {
   ApiAuthRegisterVerifyRoute: typeof ApiAuthRegisterVerifyRoute
   RFolderTThreadIdRoute: typeof RFolderTThreadIdRoute
   ApiAgentsFolderThreadsIndexRoute: typeof ApiAgentsFolderThreadsIndexRoute
+  ApiAgentsFolderThreadsThreadIdArchiveRoute: typeof ApiAgentsFolderThreadsThreadIdArchiveRoute
   ApiAgentsFolderThreadsThreadIdMessagesRoute: typeof ApiAgentsFolderThreadsThreadIdMessagesRoute
 }
 
@@ -484,6 +498,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAgentsFolderThreadsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/agents/$folder/threads/$threadId/archive': {
+      id: '/api/agents/$folder/threads/$threadId/archive'
+      path: '/api/agents/$folder/threads/$threadId/archive'
+      fullPath: '/api/agents/$folder/threads/$threadId/archive'
+      preLoaderRoute: typeof ApiAgentsFolderThreadsThreadIdArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/agents/$folder/threads/$threadId/messages': {
       id: '/api/agents/$folder/threads/$threadId/messages'
       path: '/api/agents/$folder/threads/$threadId/messages'
@@ -527,6 +548,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthRegisterVerifyRoute: ApiAuthRegisterVerifyRoute,
   RFolderTThreadIdRoute: RFolderTThreadIdRoute,
   ApiAgentsFolderThreadsIndexRoute: ApiAgentsFolderThreadsIndexRoute,
+  ApiAgentsFolderThreadsThreadIdArchiveRoute:
+    ApiAgentsFolderThreadsThreadIdArchiveRoute,
   ApiAgentsFolderThreadsThreadIdMessagesRoute:
     ApiAgentsFolderThreadsThreadIdMessagesRoute,
 }

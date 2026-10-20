@@ -43,6 +43,11 @@ export const client = {
       `/api/agents/${encodeURIComponent(folder)}/threads/${encodeURIComponent(threadId)}/messages`,
     ).then((r) => r.messages),
   pending: () => api<{ cards: Card[] }>('/api/pending').then((r) => r.cards),
+  archive: (folder: string, threadId: string, archived: boolean) =>
+    api<{ archived: boolean }>(
+      `/api/agents/${encodeURIComponent(folder)}/threads/${encodeURIComponent(threadId)}/archive`,
+      post({ archived }),
+    ),
   send: (folder: string, threadId: string, text: string) =>
     api<{ id: string }>('/api/messages', post({ folder, threadId, text })),
   act: (questionId: string, option: number) =>

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { proxied, readJson } from '~/server/http'
 import { nanoclaw } from '~/server/nanoclaw'
-import { rememberTitle } from '~/server/threads'
+import { rememberTitle, setArchived } from '~/server/threads'
 
 export const Route = createFileRoute('/api/messages')({
   server: {
@@ -16,6 +16,7 @@ export const Route = createFileRoute('/api/messages')({
         return proxied(async () => {
           const sent = await nanoclaw.send(folder, threadId, text)
           rememberTitle(folder, threadId, text)
+          setArchived(folder, threadId, false)
           return sent
         }, 202)
       },

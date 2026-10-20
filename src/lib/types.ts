@@ -18,6 +18,8 @@ export interface Thread {
   createdAt: string
   /** Ravens' own title: the thread's first message. */
   title: string | null
+  /** Archived in Ravens: hidden from the thread list until unarchived. */
+  archived: boolean
 }
 
 export interface HistoryMessage {
