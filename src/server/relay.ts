@@ -9,25 +9,29 @@
 import type { AppEvent, NanoclawEvent } from '~/lib/types'
 import { nanoclaw, nanoclawFetch } from './nanoclaw'
 import { pushAll } from './push'
+import { shared } from './shared'
 import { frame, SseParser } from './sse'
 
 type Client = (chunk: string) => void
 
-const clients = new Set<Client>()
-let boot: string | null = null
-let seq = 0
-let running = false
-let abort: AbortController | null = null
-let connected = false
-const agentNames = new Map<string, string>()
+const state = shared('relay', () => ({
+  clients: new Set<Client>(),
+  boot: null as string | null,
+  seq: 0,
+  running: false,
+  abort: null as AbortController | null,
+  connected: false,
+  agentNames: new Map<string, string>(),
+}))
+const { clients, agentNames } = state
 
 export function relayStatus() {
-  return { connected, clients: clients.size, boot, seq }
+  return { connected: state.connected, clients: clients.size, boot: state.boot, seq: state.seq }
 }
 
 export function addClient(send: Client): () => void {
   clients.add(send)
-  send(frame('ready', { connected }))
+  send(frame('ready', { connected: state.connected }))
   return () => clients.delete(send)
 }
 
@@ -84,16 +88,16 @@ export async function pushFor(
 async function handle(type: string, data: string, id: string | undefined): Promise<void> {
   if (type === 'ready') {
     const ready = JSON.parse(data) as { boot: string; seq: number }
-    if (boot !== null && ready.boot !== boot) broadcast({ type: 'resync' })
-    if (ready.boot !== boot) seq = ready.seq
-    boot = ready.boot
+    if (state.boot !== null && ready.boot !== state.boot) broadcast({ type: 'resync' })
+    if (ready.boot !== state.boot) state.seq = ready.seq
+    state.boot = ready.boot
     return
   }
   if (type === 'resync') {
     broadcast({ type: 'resync' })
     return
   }
-  if (id) seq = Number(id)
+  if (id) state.seq = Number(id)
   const event = JSON.parse(data) as NanoclawEvent
   broadcast(event)
   const payload = await pushFor(event, clients.size > 0)
@@ -101,10 +105,10 @@ async function handle(type: string, data: string, id: string | undefined): Promi
 }
 
 async function connectOnce(signal: AbortSignal): Promise<void> {
-  const query = boot ? `?boot=${encodeURIComponent(boot)}&since=${seq}` : ''
+  const query = state.boot ? `?boot=${encodeURIComponent(state.boot)}&since=${state.seq}` : ''
   const res = await nanoclawFetch(`/events${query}`, { headers: { accept: 'text/event-stream' }, signal })
   if (!res.ok || !res.body) throw new Error(`event stream answered ${res.status}`)
-  connected = true
+  state.connected = true
   const parser = new SseParser()
   const decoder = new TextDecoder()
   const reader = res.body.getReader()
@@ -117,23 +121,23 @@ async function connectOnce(signal: AbortSignal): Promise<void> {
       }
     }
   } finally {
-    connected = false
+    state.connected = false
   }
 }
 
 export function startRelay(): void {
-  if (running) return
-  running = true
-  abort = new AbortController()
-  const signal = abort.signal
+  if (state.running) return
+  state.running = true
+  state.abort = new AbortController()
+  const signal = state.abort.signal
   void (async () => {
     let delay = 1_000
-    while (running) {
+    while (state.running) {
       const started = Date.now()
       try {
         await connectOnce(signal)
       } catch (err) {
-        if (!running) break
+        if (!state.running) break
         console.warn('relay disconnected:', (err as Error).message)
       }
       // A stream that stayed up a while was healthy; start backoff over.
@@ -145,8 +149,8 @@ export function startRelay(): void {
 }
 
 export function stopRelay(): void {
-  running = false
-  abort?.abort()
+  state.running = false
+  state.abort?.abort()
   for (const send of clients) send(frame('resync', {}))
   clients.clear()
 }

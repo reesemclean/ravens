@@ -5,6 +5,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import Database from 'better-sqlite3'
 import { settings } from './config'
+import { shared } from './shared'
 
 export const MIGRATIONS: string[] = [
   `
@@ -49,7 +50,7 @@ export const MIGRATIONS: string[] = [
   `,
 ]
 
-let instance: Database.Database | null = null
+const handle = shared('db', () => ({ instance: null as Database.Database | null }))
 
 export function openDb(file: string): Database.Database {
   const db = new Database(file)
@@ -66,20 +67,20 @@ export function openDb(file: string): Database.Database {
 }
 
 export function db(): Database.Database {
-  if (!instance) {
+  if (!handle.instance) {
     fs.mkdirSync(settings.dataDir, { recursive: true })
-    instance = openDb(path.join(settings.dataDir, 'ravens.db'))
+    handle.instance = openDb(path.join(settings.dataDir, 'ravens.db'))
   }
-  return instance
+  return handle.instance
 }
 
 /** Tests swap in an in-memory database. */
 export function setDb(next: Database.Database | null): void {
-  instance?.close()
-  instance = next
+  handle.instance?.close()
+  handle.instance = next
 }
 
 export function closeDb(): void {
-  instance?.close()
-  instance = null
+  handle.instance?.close()
+  handle.instance = null
 }
