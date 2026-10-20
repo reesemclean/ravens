@@ -9,6 +9,9 @@ export default defineConfig({
     // Connects to NanoClaw's event stream when the process starts, not on the
     // first request: push notifications have to flow with no browser open.
     plugins: ['./src/nitro/startup.ts'],
+    // Left unbundled: it imports reflect-metadata for @peculiar/x509, and
+    // bundling puts x509 in a chunk that runs before that polyfill.
+    traceDeps: ['@simplewebauthn/server'],
   },
   plugins: [
     // src/start.ts's middleware replaces Start's server-function CSRF guard
