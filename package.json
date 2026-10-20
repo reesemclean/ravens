@@ -1,0 +1,38 @@
+{
+  "name": "ravens",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "start": "node .output/server/index.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@assistant-ui/react": "0.15.29",
+    "@assistant-ui/react-markdown": "0.14.23",
+    "@simplewebauthn/browser": "14.0.0",
+    "@simplewebauthn/server": "14.0.3",
+    "@tanstack/react-query": "5.104.2",
+    "@tanstack/react-router": "1.170.44",
+    "@tanstack/react-start": "1.169.1",
+    "better-sqlite3": "13.0.3",
+    "nitro": "3.0.260903-beta",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remark-gfm": "4.0.1",
+    "web-push": "3.6.7"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "9.6.0",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/web-push": "3.6.4",
+    "@vitejs/plugin-react": "6.1.2",
+    "typescript": "6.0.3",
+    "vite": "8.3.4",
+    "vitest": "5.0.4"
+  }
+}
