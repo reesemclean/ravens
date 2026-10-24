@@ -1,7 +1,7 @@
 # Keep the Node version in step with .mise.toml.
 
 # --- Build: vite build (client + Nitro server) ---
-FROM node:24.21-slim AS build
+FROM node:24.22-slim AS build
 WORKDIR /app
 # --ignore-scripts: better-sqlite3 ships prebuilt binaries, but `npm ci`
 # doesn't see its `gypfile: false` in the lockfile and tries `node-gyp
@@ -13,7 +13,7 @@ RUN npm run build
 
 # --- Runtime: only .output. Nitro bundles the server and traces its native
 # dependency (better-sqlite3) into .output/server/node_modules. ---
-FROM node:24.21-slim
+FROM node:24.22-slim
 WORKDIR /app
 COPY --from=build /app/.output ./.output
 
